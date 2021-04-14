@@ -1,0 +1,25 @@
+# Template file for 'sqlitestudio'
+pkgname=sqlitestudio
+version=3.3.3
+revision=1
+build_wrksrc=SQLiteStudio3
+build_style=qmake
+hostmakedepends="qt5-qmake qt5-host-tools"
+makedepends="qt5-devel
+ qt5-script-devel
+ qt5-svg-devel
+ qt5-tools-devel
+ readline-devel
+ sqlite-devel
+ tcl-devel"
+depends="sqlite"
+short_desc="Free, open source, multi-platform SQLite database manager"
+maintainer="Arjan Mossel <arjanmossel@gmail.com>"
+license="custom:GPL-3-with-OpenSSL-exception"
+homepage="https://sqlitestudio.pl/"
+distfiles="https://github.com/pawelsalawa/sqlitestudio/archive/$version.tar.gz"
+checksum=f234e1ea87d27e80a1794f86d32116ebd8919d51be63d35a7d0816a77115ce31
+
+post_install() {
+	vlicense ../LICENSE
+}
