@@ -1,0 +1,25 @@
+# Template file for 'brave-browser-beta'
+# Repackages the official rpm package.
+pkgname=brave-browser-beta
+version=1.86.132
+revision=1
+archs="x86_64"
+create_wrksrc=yes
+hostmakedepends="rpmextract"
+short_desc="Browser that rethinks the web"
+maintainer="Arjan Mossel <arjanmossel@gmail.com>"
+license="MPL-2.0"
+homepage="https://www.brave.com/"
+changelog="https://brave.com/latest/"
+distfiles="https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser-beta-${version}-1.x86_64.rpm"
+checksum=34a1eba4b85cde2ff6b9bf2fd3a43f881f3f27f154d517eb12403e259d9166d4
+
+do_install() {
+	# Remove cron job
+	rm -f etc/cron.daily/brave-browser
+	# Copy files
+	vcopy "*" /
+	# Install the icon
+	vmkdir usr/share/pixmaps
+	vinstall opt/brave.com/brave-beta/product_logo_128_beta.png 644 usr/share/pixmaps brave-browser-beta.png
+}
