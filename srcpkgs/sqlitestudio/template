@@ -1,0 +1,53 @@
+# Template file for 'sqlitestudio'
+pkgname=sqlitestudio
+version=3.4.6
+revision=1
+build_style=qmake
+hostmakedepends="pkg-config qt6-base-devel qt6-declarative-host-tools qt6-tools"
+# Qt dependencies: core, gui, widgets, script, network, xml, svg, uitools, printsupport
+makedepends="qt6-base-devel
+ qt6-declarative-devel
+ qt6-network
+ qt6-printsupport
+ qt6-svg-devel
+ qt6-tools-devel
+ qt6-widgets
+ qt6-xml
+ readline-devel
+ sqlite-devel
+ tcl-devel"
+# qt6-qt5compat-devel # QRegularExpression should be used, not QRegExp?
+short_desc="Free, open source, multi-platform SQLite database manager"
+maintainer="Arjan Mossel <arjanmossel@gmail.com>"
+license="custom:GPL-3.0-only-with-OpenSSL-exception"
+homepage="https://sqlitestudio.pl/"
+distfiles="https://github.com/pawelsalawa/sqlitestudio/archive/$version.tar.gz"
+checksum=b21758383d100f7444c8c67975f9adb402d73cd7aa74645344c2df22b12e16f0
+nocross="need to untangle libs and includes for multiple .pro files?"
+
+do_configure() {
+	export QT_VERSION_MAJ=6
+	mkdir -p output/build/Plugins
+	cd output/build
+	# "qmake/qmake6: command not found" (?)
+	/usr/lib/qt6/bin/qmake ${wrksrc}/SQLiteStudio3
+	cd ${wrksrc}/output/build/Plugins
+	/usr/lib/qt6/bin/qmake ${wrksrc}/Plugins
+}
+
+do_build() {
+	# sqlitecreatetable.h:16:10: fatal error: QRegExp: No such file or directory
+	make -C output/build
+	make -C output/build/Plugins
+}
+
+do_install() {
+	make INSTALL_ROOT=${DESTDIR} install -C output/build
+	make INSTALL_ROOT=${DESTDIR} install -C output/build/Plugins
+	vinstall SQLiteStudio3/guiSQLiteStudio/img/sqlitestudio.svg 644 usr/share/icons/hicolor/scalable/apps
+	vinstall ${FILESDIR}/sqlitestudio.desktop 644 usr/share/applications
+}
+
+post_install() {
+	vlicense LICENSE
+}
