@@ -1,0 +1,33 @@
+# Template file for 'antigravity'
+pkgname=antigravity
+version=1.13.3
+revision=1
+archs="x86_64"
+hostmakedepends="rpmextract" # For RPM version
+short_desc="Google Antigravity"
+maintainer="Arjan Mossel <arjanmossel@gmail.com>"
+license="Apache-2.0"
+homepage="https://antigravity.google/download/linux"
+changelog="https://antigravity.google/changelog"
+# RPM:
+# distfiles="https://us-central1-yum.pkg.dev/projects/antigravity-auto-updater-dev/antigravity-rpm/Packages/9a995f887de69b3f02dbf37fd5e0631e826d78d7b675a6acc92674d316944d49-antigravity-1.11.17-1765240585.el8.x86_64.rpm"
+# checksum=9a995f887de69b3f02dbf37fd5e0631e826d78d7b675a6acc92674d316944d49 # rpm 1.11.17
+# Tarball:
+distfiles="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/1.13.3-4533425205018624/linux-x64/Antigravity.tar.gz"
+checksum=084dfbedf1049b363aa3ad7ba679eec8b80feaf29585accb90b5910ebb270048
+
+# RPM version:
+# do_install() {
+# 	vmkdir opt/antigravity
+# 	vcopy "share/*" opt/antigravity
+# 	vmkdir usr/bin
+# 	ln -s /opt/antigravity/antigravity/bin/antigravity ${DESTDIR}/usr/bin/antigravity
+# }
+
+# Tarball version:
+do_install() {
+	vmkdir usr/bin
+	vmkdir usr/lib/antigravity
+	vcopy "*" usr/lib/antigravity
+	ln -s /usr/lib/antigravity/bin/antigravity ${DESTDIR}/usr/bin/antigravity
+}
