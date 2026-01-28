@@ -1,0 +1,5 @@
+#!/bin/sh
+[ -r conf ] && . ./conf
+exec 2>&1
+sv check dbus >/dev/null || exit 1
+exec /usr/bin/mullvad-daemon -v ${OPTS:- --disable-stdout-timestamps}
