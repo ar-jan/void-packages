@@ -1,6 +1,6 @@
 # Template file for 'antigravity'
 pkgname=antigravity
-version=1.21.9
+version=1.22.2
 revision=1
 archs="x86_64"
 hostmakedepends="rpmextract" # For RPM version
@@ -13,8 +13,8 @@ changelog="https://antigravity.google/changelog"
 # distfiles="https://us-central1-yum.pkg.dev/projects/antigravity-auto-updater-dev/antigravity-rpm/Packages/9a995f887de69b3f02dbf37fd5e0631e826d78d7b675a6acc92674d316944d49-antigravity-1.11.17-1765240585.el8.x86_64.rpm"
 # checksum=9a995f887de69b3f02dbf37fd5e0631e826d78d7b675a6acc92674d316944d49 # rpm 1.11.17
 # Tarball:
-distfiles="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/1.21.9-4905428782546944/linux-x64/Antigravity.tar.gz"
-checksum=85ea4d55f52d32fbbf9d92fddc747f10e8d04c1bd00a07721b571fa7f2ef5226
+distfiles="https://edgedl.me.gvt1.com/edgedl/release2/j0qc3/antigravity/stable/1.22.2-5206900187463680/linux-x64/Antigravity.tar.gz"
+checksum=85c6b2decfefef2c6e0adaf161b602da7c1ecb2db6157ec0a4caffcfe4811209
 
 # RPM version:
 # do_install() {
