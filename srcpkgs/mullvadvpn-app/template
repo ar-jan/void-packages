@@ -1,6 +1,6 @@
 # Template file for 'mullvadvpn-app'
 pkgname=mullvadvpn-app
-version=2026.1
+version=2026.2
 revision=1
 archs="x86_64"
 create_wrksrc=yes
@@ -11,7 +11,7 @@ license="GPL-3.0"
 homepage="https://mullvad.net/en"
 changelog="https://github.com/mullvad/mullvadvpn-app/releases"
 distfiles="https://github.com/mullvad/mullvadvpn-app/releases/download/${version}/MullvadVPN-${version}_x86_64.rpm"
-checksum=192164804cd8d62a45fd3b6233fe2bbaeef8ca18cc743a1c7d2e94c63ed8dc5e
+checksum=485a5b78ca44427df1072f68fdcf0a7492ebab123e03547cc230feafa2fd26fd
 conf_files="/etc/sv/mullvad/conf"
 
 do_install() {
