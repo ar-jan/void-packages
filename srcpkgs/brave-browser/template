@@ -2,7 +2,7 @@
 # Repackages the official rpm package.
 # After https://codeberg.org/mobinmob/abyss-packages/src/branch/main/brave-browser/template
 pkgname=brave-browser
-version=1.93.129
+version=1.93.136
 revision=1
 archs="x86_64"
 create_wrksrc=yes
@@ -13,7 +13,7 @@ license="MPL-2.0"
 homepage="https://www.brave.com/"
 changelog="https://brave.com/latest/"
 distfiles="https://github.com/brave/brave-browser/releases/download/v${version}/brave-browser-${version}-1.x86_64.rpm"
-checksum=0d7e82846f013b8969f39a8d914d8d6ca6aae4b6c86a00195178e141c4b236c2
+checksum=4c36edca55e57cf6c963ad4b294cf221a3d5980623136ad041c35b7adfd3f2f4
 
 do_install() {
 	# Remove cron job
