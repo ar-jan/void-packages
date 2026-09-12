@@ -1,8 +1,9 @@
 # Template file for 'vscode'
 pkgname=vscode
-version=1.100.3
-revision=2
+version=1.137.0
+revision=1
 _electronver=42.11.3
+_electrontypes_checksum=7d9365e734e06e9f75566a8233fd016bcafb0aa9c06d26f4afcc856b99c62181
 _npmver=10.9.9
 hostmakedepends="pkg-config python3 python3-setuptools nodejs tar git ripgrep"
 makedepends="libxkbfile-devel libsecret-devel libxml2-devel mit-krb5-devel nodejs-devel ncurses-devel electron${_electronver%%.*}-devel"
@@ -12,7 +13,7 @@ maintainer="Alex Lohr <alexthkloss@web.de>"
 license="MIT"
 homepage="https://code.visualstudio.com/"
 distfiles="https://github.com/microsoft/vscode/archive/refs/tags/${version}.tar.gz"
-checksum=41aea581620e48f7ba33e29ab6a9b43d25632ce11d06480cdfe0e8f904fe3637
+checksum=bb9479618827a746f9daa65c2fc702e5b0a45bfb4047afa42ad376d89e7c2fd6
 nocross=yes # x64 build does not cut it, it contains native code
 
 if [ "$XBPS_TARGET_WORDSIZE" = "32" ]; then
@@ -25,18 +26,22 @@ export ELECTRON_SKIP_BINARY_DOWNLOAD=1
 
 do_configure() {
 	# Use npm to install dependencies
-	echo "" > build/npm/preinstall.js
+	echo "" > build/npm/preinstall.ts
 
 	# redirect telemetry urls to 0.0.0.0
 	# src: vscodium/undo_telemetry.sh
 	_TELEMETRY_URLS="(dc\.services\.visualstudio\.com)|(vortex\.data\.microsoft\.com)|(mobile\.events\.data\.microsoft\.com)"
 	_REPLACEMENT="s/$_TELEMETRY_URLS/0\.0\.0\.0/g"
-	grep -rl --exclude-dir=.git -E $_TELEMETRY_URLS | xargs sed -i -E $_REPLACEMENT
+	grep -rl --exclude-dir=.git -E $_TELEMETRY_URLS | xargs -r sed -i -E $_REPLACEMENT
 
 	# set used electron version
 	vsed -e "s/^target=\".*\"/target=\"${_electronver}\"/" -i .npmrc
+	# Match the typings checksum to our Electron version (release SHASUMS256.txt).
+	vsed -e "s/^[a-f0-9]* \*electron\.d\.ts$/${_electrontypes_checksum} *electron.d.ts/" \
+		-i build/checksums/electron.txt
 	# Use the headers from our Electron build for runtime native modules.
 	# postinstall clears this setting for host and remote Node dependencies.
+	sed -i '/^nodedir=/d' .npmrc
 	echo "nodedir=/usr/include/electron${_electronver%%.*}/node_headers" >> .npmrc
 }
 
@@ -72,7 +77,7 @@ do_install() {
 	vcopy ../VSCode-linux-x64/resources usr/lib/code-oss
 	vcopy ../VSCode-linux-x64/bin usr/lib/code-oss
 	# Replace statically included binary with system copy
-	ln -sf /usr/bin/rg ${DESTDIR}/usr/lib/code-oss/resources/app/node_modules/@vscode/ripgrep/bin/rg
+	ln -sf /usr/bin/rg "${DESTDIR}/usr/lib/code-oss/resources/app/node_modules.asar.unpacked/@vscode/ripgrep-universal/bin/linux-x64/rg"
 	vmkdir usr/bin
 	ln -sf /usr/lib/code-oss/bin/code-oss ${DESTDIR}/usr/bin/
 	vmkdir usr/share/applications

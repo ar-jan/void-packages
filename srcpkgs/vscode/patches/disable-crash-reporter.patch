@@ -1,20 +1,19 @@
-diff --git a/src/main.ts b/src/main.ts
-index ff9a5e89296..13bd078db46 100644
 --- a/src/main.ts
 +++ b/src/main.ts
-@@ -10,7 +10,7 @@ import { performance } from 'perf_hooks';
+@@ -9,7 +9,7 @@
+ import { performance } from 'node:perf_hooks';
  import { configurePortable } from './bootstrap-node.js';
  import { bootstrapESM } from './bootstrap-esm.js';
- import { fileURLToPath } from 'url';
 -import { app, protocol, crashReporter, Menu, contentTracing } from 'electron';
 +import { app, protocol, Menu, contentTracing } from 'electron';
  import minimist from 'minimist';
  import { product } from './bootstrap-meta.js';
  import { parse } from './vs/base/common/jsonc.js';
-@@ -72,21 +72,6 @@ const codeCachePath = getCodeCachePath();
+@@ -68,21 +68,6 @@
+ 
  // Disable default menu (https://github.com/electron/electron/issues/35512)
  Menu.setApplicationMenu(null);
- 
+-
 -// Configure crash reporter
 -perf.mark('code/willStartCrashReporter');
 -// If a crash-reporter-directory is specified we store the crash reports
@@ -29,11 +28,10 @@ index ff9a5e89296..13bd078db46 100644
 -	configureCrashReporter();
 -}
 -perf.mark('code/didStartCrashReporter');
--
+ 
  // Set logs path before app 'ready' event if running portable
  // to ensure that no 'logs' folder is created on disk at a
- // location outside of the portable directory
-@@ -391,97 +376,6 @@ function getArgvConfigPath(): string {
+@@ -455,98 +440,6 @@
  	return path.join(os.homedir(), dataFolderName!, 'argv.json');
  }
  
@@ -124,10 +122,11 @@ index ff9a5e89296..13bd078db46 100644
 -		productName: process.env['VSCODE_DEV'] ? `${productName} Dev` : productName,
 -		submitURL,
 -		uploadToServer,
--		compress: true
+-		compress: true,
+-		ignoreSystemCrashHandler: true
 -	});
 -}
 -
- function getJSFlags(cliArgs: NativeParsedArgs): string | null {
+ function getJSFlags(cliArgs: NativeParsedArgs, argvConfig: IArgvConfig): string | null {
  	const jsFlags: string[] = [];
  

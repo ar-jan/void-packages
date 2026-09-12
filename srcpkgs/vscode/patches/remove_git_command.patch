@@ -1,10 +1,20 @@
-diff --git a/build/npm/postinstall.js b/build/npm/postinstall.js
-index 07b4412c458..6398ed7b0b6 100644
---- a/build/npm/postinstall.js
-+++ b/build/npm/postinstall.js
-@@ -111,5 +111,3 @@ for (let dir of dirs) {
- 	yarnInstall(dir, opts);
- }
+--- a/build/npm/postinstall.ts
++++ b/build/npm/postinstall.ts
+@@ -246,8 +246,6 @@
  
--cp.execSync('git config pull.rebase merges');
--cp.execSync('git config blame.ignoreRevsFile .git-blame-ignore-revs');
+ 	if (!process.env['VSCODE_FORCE_INSTALL'] && isUpToDate()) {
+ 		log('.', 'All dependencies up to date, skipping postinstall.');
+-		child_process.execSync('git config pull.rebase merges');
+-		child_process.execSync('git config blame.ignoreRevsFile .git-blame-ignore-revs');
+ 		return;
+ 	}
+ 
+@@ -319,8 +317,6 @@
+ 	log('.', `Running ${parallelTasks.length} npm installs with concurrency ${concurrency}...`);
+ 	await runWithConcurrency(parallelTasks, concurrency);
+ 
+-	child_process.execSync('git config pull.rebase merges');
+-	child_process.execSync('git config blame.ignoreRevsFile .git-blame-ignore-revs');
+ 
+ 	fs.writeFileSync(stateFile, JSON.stringify(_state));
+ 	fs.writeFileSync(stateContentsFile, JSON.stringify(computeContents()));
