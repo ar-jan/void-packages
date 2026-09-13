@@ -3583,6 +3583,7 @@ liblinphone++.so.10 linphone-5.3.75_1
 libbelr.so.1 belr-0.1.3_1
 libbelcard.so.1 belcard-1.0.2_1
 libsoci_core.so.4.0 soci-4.0.3_1
+libsoci_sqlite3.so.4.0 soci-4.0.3_1
 libshaderc_shared.so.1 shaderc-2018.0_1
 libglslang.so.16 glslang-16.2.0_1
 libglslang-default-resource-limits.so.16 glslang-16.2.0_1
