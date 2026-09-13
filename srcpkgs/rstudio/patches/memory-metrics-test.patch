@@ -1,0 +1,30 @@
+--- a/src/cpp/core/system/EnvironmentTests.cpp
++++ b/src/cpp/core/system/EnvironmentTests.cpp
+@@ -17,6 +17,10 @@
+ 
+ #include <stdlib.h>
+ 
++#ifdef __linux__
++#include <sys/sysinfo.h>
++#endif
++
+ #include <boost/thread.hpp>
+ 
+ #include <shared_core/Error.hpp>
+@@ -221,6 +225,16 @@
+    MemoryProvider provider;
+    getTotalMemoryUsed(&used, &provider);
+    getTotalMemory(&total, &provider);
++#ifdef __linux__
++   // The proc-meminfo provider includes swap in used memory, but reports
++   // only physical RAM as total memory. Compare against RAM + swap capacity.
++   if (provider == MemoryProviderLinuxProcMeminfo)
++   {
++      struct sysinfo info;
++      ASSERT_EQ(::sysinfo(&info), 0);
++      total += static_cast<unsigned long long>(info.totalswap) * info.mem_unit / 1024;
++   }
++#endif
+    getProcessMemoryUsed(&process, &provider);
+ 
+    // It'd be weird if there was more used memory than we had memory in the

@@ -1,0 +1,25 @@
+--- a/src/node/desktop/CMakeLists.txt
++++ b/src/node/desktop/CMakeLists.txt
+@@ -196,7 +196,7 @@
+ # copy sources to build directory. note that the build directory cannot
+ # be the "true" CMake directory as some files are resolved relative to
+ # the desktop project's relative path in the application structure
+-file(REMOVE_RECURSE "${ELECTRON_BINARY_DIR}")
++# Preserve downloaded modules and completed addon builds across CMake reruns.
+ file(MAKE_DIRECTORY "${ELECTRON_BINARY_DIR}")
+ file(
+    COPY "${CMAKE_CURRENT_SOURCE_DIR}/"
+@@ -206,6 +206,13 @@
+    REGEX "/bin$" EXCLUDE
+    REGEX "/out$" EXCLUDE
+    REGEX "/node_modules$" EXCLUDE)
++
++execute_process(
++   COMMAND "${CMAKE_COMMAND}" -E env "RSTUDIO_VERSION=${CPACK_PACKAGE_VERSION}"
++      "${NODEJS}" "${CMAKE_CURRENT_SOURCE_DIR}/scripts/void-prepare.cjs"
++   WORKING_DIRECTORY "${ELECTRON_BINARY_DIR}"
++   COMMAND_ERROR_IS_FATAL ANY)
++
+ 
+ configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/main/build-info.ts.in

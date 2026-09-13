@@ -1,0 +1,96 @@
+--- a/src/node/desktop/webpack.main.config.js
++++ b/src/node/desktop/webpack.main.config.js
+@@ -14,7 +14,7 @@
+    * This is the main entry point for your application, it's the first file
+    * that runs in the main process.
+    */
+-  entry: './src/main/main.ts',
++  entry: './src/main/void-main.ts',
+   // Put your normal webpack config below here
+   module: {
+     rules: require('./webpack.rules'),
+--- a/src/node/desktop/src/main/void-main.ts
++++ b/src/node/desktop/src/main/void-main.ts
+@@ -0,0 +1,10 @@
++// The distribution runs this installed application with system Electron.
++import { app } from 'electron';
++
++Object.defineProperty(app, 'isPackaged', { value: true });
++if (process.defaultApp) {
++  process.argv.splice(1, 1);
++}
++app.setName('RStudio');
++app.setPath('userData', require('path').join(app.getPath('appData'), 'RStudio'));
++require('./main');
+--- a/src/node/desktop/src/main/application-launch.ts
++++ b/src/node/desktop/src/main/application-launch.ts
+@@ -62,7 +62,7 @@
+   launchRStudio(options: LaunchRStudioOptions): void {
+     // in devmode, we need to pass the directory path when launching the application;
+     // for package builds, we have no such requirement
+-    const argv = app.isPackaged ? [] : [process.argv[1]];
++    const argv: string[] = [];
+ 
+     // resolve working directory
+     let workingDir = app.getPath('home');
+@@ -80,7 +80,7 @@
+     }
+ 
+     // run it
+-    const childProcess = spawn(process.execPath, argv, {
++    const childProcess = spawn('/usr/bin/rstudio', argv, {
+       detached: true,
+       stdio: 'ignore', // don't reuse the stdio from parent
+     });
+--- a/src/node/desktop/src/main/session-launcher.ts
++++ b/src/node/desktop/src/main/session-launcher.ts
+@@ -840,7 +840,7 @@
+     argList.push('--launcher-token', SessionLauncher.launcherToken);
+ 
+     // make sure the session knows where to find the desktop exectuable
+-    setenv('RSTUDIO_DESKTOP_EXE', app.getPath('exe'));
++    setenv('RSTUDIO_DESKTOP_EXE', '/usr/bin/rstudio');
+ 
+     // recalculate the local peer and set RS_LOCAL_PEER so that
+     // rsession and it's children can use it
+--- a/src/node/desktop/src/main/log-options.ts
++++ b/src/node/desktop/src/main/log-options.ts
+@@ -36,7 +36,7 @@
+    * @param config `logging.conf` file contents
+    */
+   constructor(executableName?: string, logConfig?: LogConfig) {
+-    const execPath = new FilePath(process.execPath);
++    const execPath = new FilePath('/usr/bin/rstudio');
+     this.executableName = executableName ?? execPath.getFilename();
+ 
+     // env var RS_LOG_CONF_FILE
+--- a/src/node/desktop/forge.config.js
++++ b/src/node/desktop/forge.config.js
+@@ -15,6 +15,17 @@
+   : undefined;
+ 
+ const config = {
++  // Forge derives its Electron version from the manifest, not packagerConfig.
++  // Mutate only Forge's view; keep npm's dependency lock intact.
++  hooks: {
++    readPackageJson: (_config, pkg) => {
++      pkg.devDependencies.electron = process.env.RSTUDIO_ELECTRON_VERSION;
++      return pkg;
++    },
++  },
++  rebuildConfig: {
++    buildFromSource: true,
++  },
+   plugins: [
+     {
+       name: '@electron-forge/plugin-webpack',
+@@ -78,6 +89,9 @@
+ 
+   // https://electron.github.io/electron-packager/main/interfaces/electronpackager.options.html 
+   packagerConfig: {
++    electronZipDir: process.env.RSTUDIO_ELECTRON_ZIP_DIR,
++    appVersion: require('./package.json').version,
++    asar: false,
+     icon: './resources/icons/RStudio',
+     appBundleId: 'com.rstudio.desktop',
+     appCopyright: `Copyright (C) ${new Date().getFullYear()} by Posit Software, PBC`,

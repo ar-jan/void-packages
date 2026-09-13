@@ -1,0 +1,71 @@
+--- a/cmake/globals.cmake
++++ b/cmake/globals.cmake
+@@ -495,7 +495,7 @@
+    set(RSTUDIO_NODE_PATH "${RSTUDIO_DEPENDENCIES_DIR}/common/node/${RSTUDIO_INSTALLED_NODE_VERSION}-installed/bin/node")
+ endif()
+ 
+-set(RSTUDIO_NODE_PATH "${RSTUDIO_NODE_PATH}" CACHE INTERNAL "Path to bundled node binary")
++set(RSTUDIO_NODE_PATH "/usr/bin/node" CACHE INTERNAL "Path to system node binary" FORCE)
+ 
+ # special install directories for apple desktop
+ if (APPLE)
+--- a/src/gwt/CMakeLists.txt
++++ b/src/gwt/CMakeLists.txt
+@@ -114,6 +114,9 @@
+          "Building GWT sources"
+       COMMAND
+          ${ANT}
++         -Dpython.bin=/usr/bin/python3
++         -Dnode.dir=/usr
++         -Dyarn.bin=/usr/bin/yarn
+          -Dbuild.dir="${GWT_BIN_DIR}"
+          -Dextras.dir="${GWT_EXTRAS_DIR}"
+          -Dwww.dir="${GWT_WWW_DIR}"
+--- a/src/gwt/build.xml
++++ b/src/gwt/build.xml
+@@ -193,6 +193,9 @@
+       <retry retrycount="3">
+          <exec executable="${yarn.bin}" dir="${acesupport.watcher.dir}" resolveexecutable="true" failonerror="true">
+             <arg value="install"/>
++             <arg value="--offline"/>
++             <arg value="--frozen-lockfile"/>
++             <arg value="--ignore-scripts"/>
+             <arg value="--network-timeout"/>
+             <arg value="240000"/>
+          </exec>
+@@ -309,6 +312,9 @@
+       <retry retrycount="3">
+          <exec executable="${yarn.bin}" dir="${panmirror.dir}" resolveexecutable="true" failonerror="true">
+             <arg value="install"/>
++             <arg value="--offline"/>
++             <arg value="--frozen-lockfile"/>
++             <arg value="--ignore-scripts"/>
+             <arg value="--network-timeout"/>
+             <arg value="240000"/>
+          </exec>
+--- a/src/node/desktop/CMakeLists.txt
++++ b/src/node/desktop/CMakeLists.txt
+@@ -295,7 +295,7 @@
+ add_custom_target(electron_build DEPENDS "${ELECTRON_BINARY_DIR}/out")
+ 
+ # add target dependencies, so we don't build too many things at once
+-add_dependencies(electron electron_fuses)
++add_dependencies(electron electron_build)
+ add_dependencies(electron_fuses electron_build)
+ add_dependencies(electron_build rsession diagnostics)
+ if(TARGET gwt_build)
+@@ -329,12 +329,12 @@
+    endif()
+ 
+    install(
+-      DIRECTORY "${ELECTRON_BINARY_DIR}/out/RStudio-linux-${ELECTRON_ARCH}/"
++      DIRECTORY "${ELECTRON_BINARY_DIR}/out/RStudio-linux-${ELECTRON_ARCH}/resources/app/"
+       DIRECTORY_PERMISSIONS
+       OWNER_READ OWNER_WRITE OWNER_EXECUTE
+       GROUP_READ GROUP_EXECUTE
+       WORLD_READ WORLD_EXECUTE
+-      DESTINATION "${RSTUDIO_INSTALL_ELECTRON}"
++      DESTINATION "${RSTUDIO_INSTALL_SUPPORTING}"
+       USE_SOURCE_PERMISSIONS
+    )
+ 

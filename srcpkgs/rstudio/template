@@ -1,0 +1,170 @@
+# Template file for 'rstudio'
+pkgname=rstudio
+version=2026.09.0+174
+revision=1
+archs="x86_64"
+build_style=cmake
+_electronver=42.11.3
+_panmirrorrev=828ae28e53b796fb95a33bd7f3c7c109e0709649
+_gwtrelease=2.12.2-autumn-hawkbit
+configure_args="-DRSTUDIO_TARGET=Electron -DRSTUDIO_PACKAGE_BUILD=ON
+ -DNODEJS=/usr/bin/node -DNPM=/usr/bin/npm -DNPX=/usr/bin/npx -DYARN=/usr/bin/yarn
+ -DCMAKE_INSTALL_PREFIX=/usr/lib/rstudio
+ -DRSTUDIO_USE_SYSTEM_BOOST=ON -DRSTUDIO_USE_SYSTEM_SOCI=ON
+ -DRSTUDIO_USE_SYSTEM_YAML_CPP=ON -DRSTUDIO_USE_SYSTEM_FMT=ON
+ -DRSTUDIO_USE_SYSTEM_LIBGIT2=ON -DRSTUDIO_USE_SYSTEM_HUNSPELL=ON
+ -USOCI_CORE_LIB -USOCI_SQLITE_LIB
+ -DQUARTO_ENABLED=OFF -DRSTUDIO_ENABLE_AI_FEATURES=OFF
+ -DRSTUDIO_USE_PAM=OFF -DRSTUDIO_DISABLE_CHECK_FOR_UPDATES=ON
+ -DFETCHCONTENT_FULLY_DISCONNECTED=ON
+ -DRSTUDIO_GIT_REVISION_HASH=870df5ed7859c758db7aed6f510a3edca3c74bd7"
+hostmakedepends="apache-ant git mathjax mathjax2 nodejs openjdk17 pandoc pkg-config
+ python3 python3-lxml R unzip yarn zip"
+makedepends="boost-devel electron42-devel fmt-devel hunspell-devel
+ libgit2-1.9-devel libuuid-devel openssl-devel R soci-devel sqlite-devel
+ yaml-cpp-devel zlib-devel"
+depends="electron42>=${_electronver} R nodejs pandoc mathjax>=4.1.3 mathjax2 procps-ng"
+checkdepends="lsof procps-ng"
+short_desc="Integrated development environment (IDE) for R"
+maintainer="John <me@johnnynator.dev>"
+license="AGPL-3.0-only"
+homepage="https://posit.co/products/open-source/rstudio/"
+distfiles="https://github.com/rstudio/rstudio/archive/refs/tags/v${version}.tar.gz>rstudio-${version}.tar.gz
+ https://s3.amazonaws.com/rstudio-dictionaries/core-dictionaries.zip
+ https://rstudio-buildtools.s3.us-east-1.amazonaws.com/gwt/gwt-2.12.2-autumn-hawkbit.tar.gz
+ https://github.com/quarto-dev/quarto/archive/828ae28e53b796fb95a33bd7f3c7c109e0709649.tar.gz>panmirror-828ae28e53b796fb95a33bd7f3c7c109e0709649.tar.gz
+ https://github.com/cubicdaiya/dtl/archive/32567bb9ec704f09040fb1ed7431a3d967e3df03.tar.gz>dtl-32567bb9ec704f09040fb1ed7431a3d967e3df03.tar.gz
+ https://github.com/gsl-lite/gsl-lite/archive/21751fb0473473e27ffb1f280543885ed65447a8.tar.gz>gsl_lite-21751fb0473473e27ffb1f280543885ed65447a8.tar.gz
+ https://github.com/google/googletest/archive/52eb8108c5bdec04579160ae17225d66034bd723.tar.gz>gtest-52eb8108c5bdec04579160ae17225d66034bd723.tar.gz
+ https://github.com/Tencent/rapidjson/archive/24b5e7a8b27f42fa16b96fc70aade9106cf7102f.tar.gz>rapidjson-24b5e7a8b27f42fa16b96fc70aade9106cf7102f.tar.gz
+ https://github.com/TartanLlama/expected/archive/292eff8bd8ee230a7df1d6a1c00c4ea0eb2f0362.tar.gz>tl_expected-292eff8bd8ee230a7df1d6a1c00c4ea0eb2f0362.tar.gz
+ https://github.com/nemtrif/utfcpp/archive/f9319195dfddf369f68f18e7c0039b3f351797fd.tar.gz>utfcpp-f9319195dfddf369f68f18e7c0039b3f351797fd.tar.gz
+ https://github.com/amini-allight/websocketpp/archive/ee8cf4257e001d939839cff5b1766a835b749cd6.tar.gz>websocketpp-ee8cf4257e001d939839cff5b1766a835b749cd6.tar.gz"
+checksum="c7da74fc2f1ab8d4decf89db561807d58015b83632b9fef1509977c3b7a66a81
+ 4341a9630efb9dcf7f215c324136407f3b3d6003e1c96f2e5e1f9f14d5787494
+ 4a5c923fe337d5447bd1d8cf5dfee72d7ed0f9558600d8f98f0e847cc1e3567b
+ 58269c622f0638cb9e151792b27729068f2eb32c8992eb44753c36edfae48e31
+ 086558eb7856bb763f0ce7ec81b24a7c2487ab692d3d3020cd778ecd49a3d9cd
+ 898695eafad4f6a6871773b05894ee4738e2d515c104bf0f273ebc787805dc2e
+ 745c55415660044610f7fcd3af7a6420d5de16a7dbb9ebfe2e131275676232be
+ 2d2601a82d2d3b7e143a3c8d43ef616671391034bc46891a9816b79cf2d3e7a8
+ fe3b18aecb849029b6af94922be0c25eee1b7b86565b1c8350692ed776cf42fb
+ 9d03f24ad6c28fcf11cfb9544df477bc79024e65f2feee50232c6ce1929f6c7e
+ 63b922a18396daa5687e36e4b96f09b9c96c03847bc8a31c02d716fb22d96fc9"
+nocross="Native build tools and Electron addons"
+skip_extraction="core-dictionaries.zip
+ gwt-2.12.2-autumn-hawkbit.tar.gz
+ panmirror-828ae28e53b796fb95a33bd7f3c7c109e0709649.tar.gz
+ dtl-32567bb9ec704f09040fb1ed7431a3d967e3df03.tar.gz
+ gsl_lite-21751fb0473473e27ffb1f280543885ed65447a8.tar.gz
+ gtest-52eb8108c5bdec04579160ae17225d66034bd723.tar.gz
+ rapidjson-24b5e7a8b27f42fa16b96fc70aade9106cf7102f.tar.gz
+ tl_expected-292eff8bd8ee230a7df1d6a1c00c4ea0eb2f0362.tar.gz
+ utfcpp-f9319195dfddf369f68f18e7c0039b3f351797fd.tar.gz
+ websocketpp-ee8cf4257e001d939839cff5b1766a835b749cd6.tar.gz"
+
+export RSTUDIO_VERSION_MAJOR=2026
+export RSTUDIO_VERSION_MINOR=09
+export RSTUDIO_VERSION_PATCH=0
+export RSTUDIO_VERSION_SUFFIX=+174
+export RSTUDIO_VERSION="${version}"
+export PACKAGE_OS=VoidLinux
+export JAVA_HOME=/usr/lib/jvm/openjdk17
+export ELECTRON_SKIP_BINARY_DOWNLOAD=1
+export ELECTRON_OVERRIDE_DIST_PATH=/usr/lib/electron42
+export RSTUDIO_ELECTRON_VERSION="${_electronver}"
+export npm_config_nodedir=/usr/include/electron42/node_headers
+export npm_config_build_from_source=true
+export npm_config_audit=false
+export npm_config_fund=false
+
+post_extract() {
+	cp "${FILESDIR}/prepare-desktop.cjs" src/node/desktop/scripts/void-prepare.cjs
+	mkdir -p dependencies/dictionaries dependencies/common/gwtproject
+	unzip -qd dependencies/dictionaries \
+		"${XBPS_SRCDISTDIR}/${pkgname}-${version}/core-dictionaries.zip"
+	vsrcextract --no-strip-components -C dependencies/common/gwtproject \
+		"gwt-${_gwtrelease}.tar.gz"
+	mkdir -p src/gwt/lib/quarto
+	vsrcextract --strip-components=1 -C src/gwt/lib/quarto \
+		"panmirror-${_panmirrorrev}.tar.gz"
+	mkdir -p dependencies/vendor/dtl
+	vsrcextract --strip-components=1 -C dependencies/vendor/dtl \
+		"dtl-32567bb9ec704f09040fb1ed7431a3d967e3df03.tar.gz"
+	mkdir -p dependencies/vendor/gsl-lite
+	vsrcextract --strip-components=1 -C dependencies/vendor/gsl-lite \
+		"gsl_lite-21751fb0473473e27ffb1f280543885ed65447a8.tar.gz"
+	mkdir -p dependencies/vendor/gtest
+	vsrcextract --strip-components=1 -C dependencies/vendor/gtest \
+		"gtest-52eb8108c5bdec04579160ae17225d66034bd723.tar.gz"
+	mkdir -p dependencies/vendor/rapidjson
+	vsrcextract --strip-components=1 -C dependencies/vendor/rapidjson \
+		"rapidjson-24b5e7a8b27f42fa16b96fc70aade9106cf7102f.tar.gz"
+	mkdir -p dependencies/vendor/tl-expected
+	vsrcextract --strip-components=1 -C dependencies/vendor/tl-expected \
+		"tl_expected-292eff8bd8ee230a7df1d6a1c00c4ea0eb2f0362.tar.gz"
+	mkdir -p dependencies/vendor/utfcpp
+	vsrcextract --strip-components=1 -C dependencies/vendor/utfcpp \
+		"utfcpp-f9319195dfddf369f68f18e7c0039b3f351797fd.tar.gz"
+	mkdir -p dependencies/vendor/websocketpp
+	vsrcextract --strip-components=1 -C dependencies/vendor/websocketpp \
+		"websocketpp-ee8cf4257e001d939839cff5b1766a835b749cd6.tar.gz"
+}
+
+pre_configure() {
+	local dep
+	for dep in dtl gsl-lite gtest rapidjson tl-expected utfcpp websocketpp; do
+		configure_args+=" -DFETCHCONTENT_SOURCE_DIR_${dep^^}=${wrksrc}/dependencies/vendor/${dep}"
+	done
+	export npm_config_cache="${wrksrc}/.npm-cache"
+	export YARN_CACHE_FOLDER="${wrksrc}/.yarn-cache"
+	export RSTUDIO_ELECTRON_ZIP_DIR="${wrksrc}/electron-dist"
+	mkdir -p "${RSTUDIO_ELECTRON_ZIP_DIR}"
+	if [ ! -f "${RSTUDIO_ELECTRON_ZIP_DIR}/electron-v${_electronver}-linux-x64.zip" ]; then
+		(cd /usr/lib/electron42 && zip -qr \
+			"${RSTUDIO_ELECTRON_ZIP_DIR}/electron-v${_electronver}-linux-x64.zip" .)
+	fi
+	ln -sfn /usr/share/mathjax dependencies/mathjax-27
+	ln -sfn /usr/share/mathjax4 dependencies/mathjax-4
+	mkdir -p dependencies/pandoc/3.2
+	ln -sfn /usr/bin/pandoc dependencies/pandoc/3.2/pandoc
+	mkdir -p dependencies/common/node/22.23.2-installed/bin
+	ln -sfn /usr/bin/node dependencies/common/node/22.23.2-installed/bin/node
+	# Acquire lockfile-pinned dependencies once; the Ant build uses the cache offline.
+	(cd src/gwt/lib/quarto && yarn install --frozen-lockfile --ignore-scripts --non-interactive)
+}
+
+post_configure() {
+	cd src/node/desktop-build-x86_64
+	node "${FILESDIR}/prepare-desktop.cjs"
+	npm ci --ignore-scripts
+	npm exec --offline -- ts-node scripts/generate.ts
+	npm exec --offline -- node-gyp rebuild --target="${_electronver}" \
+		--nodedir="${npm_config_nodedir}"
+	npm exec --offline -- electron-rebuild --force --build-from-source --version "${_electronver}"
+}
+
+pre_build() {
+	export npm_config_cache="${wrksrc}/.npm-cache"
+	export YARN_CACHE_FOLDER="${wrksrc}/.yarn-cache"
+	export RSTUDIO_ELECTRON_ZIP_DIR="${wrksrc}/electron-dist"
+	export npm_config_offline=true
+}
+
+do_check() {
+	# Upstream only enables CTest in these subdirectories, not at the root.
+	ctest --test-dir build/src/cpp/shared_core --output-on-failure
+	ctest --test-dir build/src/cpp/core --output-on-failure
+	(cd src/node/desktop-build-x86_64 && npm run typecheck)
+	(cd src/node/desktop-build-x86_64 && ELECTRON_RUN_AS_NODE=1 \
+		electron42 "${FILESDIR}/check-addons.cjs")
+}
+
+post_install() {
+	vbin "${FILESDIR}/rstudio"
+	local helper
+	for helper in diagnostics rpostback rsession; do
+		ln -s ../lib/rstudio/resources/app/bin/${helper} "${DESTDIR}/usr/bin/${helper}"
+	done
+	vlicense COPYING
+}

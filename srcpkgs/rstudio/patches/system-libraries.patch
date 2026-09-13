@@ -1,0 +1,69 @@
+--- a/src/cpp/ext/CMakeLists.txt
++++ b/src/cpp/ext/CMakeLists.txt
+@@ -173,7 +173,15 @@
+ 
+       if(${_PREFIX}_ENABLED)
+          if(RSTUDIO_USE_SYSTEM_DEPENDENCIES OR RSTUDIO_USE_SYSTEM_${_PREFIX})
+-            if(CMAKE_VERSION VERSION_GREATER "3.24")
++            if(_PREFIX STREQUAL "LIBGIT2")
++               find_package(PkgConfig REQUIRED)
++               pkg_check_modules(SYSTEM_LIBGIT2 REQUIRED IMPORTED_TARGET GLOBAL libgit2>=1.9.2)
++               add_library(libgit2package ALIAS PkgConfig::SYSTEM_LIBGIT2)
++            elseif(_PREFIX STREQUAL "HUNSPELL")
++               find_package(PkgConfig REQUIRED)
++               pkg_check_modules(SYSTEM_HUNSPELL REQUIRED IMPORTED_TARGET GLOBAL hunspell>=1.7.2)
++               add_library(rstudio-hunspell ALIAS PkgConfig::SYSTEM_HUNSPELL)
++            elseif(CMAKE_VERSION VERSION_GREATER "3.24")
+                find_package("${_NAME}" "${${_PREFIX}_VERSION}" REQUIRED GLOBAL)
+             else()
+                find_package("${_NAME}" "${${_PREFIX}_VERSION}" REQUIRED)
+@@ -209,8 +217,8 @@
+          FetchContent_MakeAvailable("${_NAME}")
+          set(CMAKE_CXX_FLAGS "${_CMAKE_CXX_FLAGS}")
+          message(STATUS "Fetching dependency ${_NAME} ${${_PREFIX}_VERSION} - success")
+-         set("${_PREFIX}_SOURCE_DIR" "${CMAKE_BINARY_DIR}/_deps/${_NAME}-src" CACHE INTERNAL "")
+-         set("${_PREFIX}_BINARY_DIR" "${CMAKE_BINARY_DIR}/_deps/${_NAME}-build" CACHE INTERNAL "")
++         set("${_PREFIX}_SOURCE_DIR" "${${_NAME}_SOURCE_DIR}" CACHE INTERNAL "")
++         set("${_PREFIX}_BINARY_DIR" "${${_NAME}_BINARY_DIR}" CACHE INTERNAL "")
+       endif()
+ 
+    endwhile()
+@@ -234,7 +242,7 @@
+ dependency(FMT
+    DEPNAME    "{fmt}"
+    COMMENT    "{fmt} is an open-source formatting library providing a fast and safe alternative to C stdio and C++ iostreams."
+-   VERSION    "11.1.4"
++   VERSION    "12.1.0"
+    REPOSITORY "https://github.com/fmtlib/fmt"
+    REVISION   "123913715afeb8a437e6388b4473fcc4753e1c9a" # pragma: allowlist secret
+ )
+@@ -495,6 +503,7 @@
+ 
+ 
+ # Create hunspell target.
++if(NOT RSTUDIO_USE_SYSTEM_HUNSPELL)
+ file(GLOB HUNSPELL_HEADER_FILES "${HUNSPELL_SOURCE_DIR}/src/hunspell/*.h*")
+ file(GLOB HUNSPELL_SOURCE_FILES "${HUNSPELL_SOURCE_DIR}/src/hunspell/*.c*")
+ add_library(rstudio-hunspell STATIC ${HUNSPELL_SOURCE_FILES} ${HUNSPELL_HEADER_FILES})
+@@ -510,6 +519,8 @@
+    target_compile_options(rstudio-hunspell PRIVATE -Wno-deprecated-declarations -Wno-sign-compare -Wno-unused-but-set-variable)
+ endif()
+ 
++
++endif()
+ 
+ # Create rapidjson target.
+ add_library(rstudio-rapidjson INTERFACE EXCLUDE_FROM_ALL)
+--- a/src/cpp/CMakeLists.txt
++++ b/src/cpp/CMakeLists.txt
+@@ -448,7 +448,9 @@
+ # undefined fmt::v<N> symbols at link time against the bundled libfmt. A -I entry
+ # is searched before /usr/local/include, so this guarantees the bundled headers
+ # win regardless of what is installed on the system.
+-include_directories(BEFORE "${FMT_SOURCE_DIR}/include")
++if(NOT RSTUDIO_USE_SYSTEM_FMT)
++   include_directories(BEFORE "${FMT_SOURCE_DIR}/include")
++endif()
+ 
+ # shared library
+ add_subdirectory(shared_core)
