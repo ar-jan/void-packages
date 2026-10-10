@@ -1,0 +1,61 @@
+# Template file for 'libwallet_engine'
+pkgname=libwallet_engine
+version=0.0.7
+revision=1
+# telegram-desktop 7.3.0 pins this revision, three commits after v0.0.7.
+_commit=e59e0d89d7ee90c388bf36e3334c5b276f396697
+build_style=cargo
+hostmakedepends="rust"
+short_desc="Wallet engine with C++ bindings for Telegram Desktop"
+maintainer="Orphaned <orphan@voidlinux.org>"
+license="MIT OR Apache-2.0"
+homepage="https://github.com/i582/wallet-engine"
+distfiles="https://github.com/i582/wallet-engine/archive/${_commit}.tar.gz"
+checksum=45d22ed481dc4fab07390abfa811c095c424e11c745e87b9d0d27b40efa17da2
+
+# Match Telegram's Rust profile; UniFFI catches panics at the FFI boundary.
+export CARGO_PROFILE_RELEASE_PANIC=unwind
+
+do_configure() {
+	cargo fetch --locked
+	cargo fetch --locked --manifest-path bindgen/cpp/bindgen/Cargo.toml
+}
+
+do_build() {
+	# No stable upstream ABI; keep the SONAME tied to this interface version.
+	cargo rustc --release --offline --locked --target ${RUST_TARGET} \
+		--lib --crate-type cdylib -- \
+		-C link-arg=-Wl,-soname,libwallet_engine.so.${version}
+	RUSTFLAGS="" cargo build --release --offline --locked --target ${RUST_BUILD} \
+		--manifest-path bindgen/cpp/bindgen/Cargo.toml
+	# The host tool reads UniFFI metadata from the target library.
+	CARGO_NET_OFFLINE=true bindgen/cpp/target/${RUST_BUILD}/release/uniffi-bindgen-cpp \
+		--library --out-dir bindings \
+		target/${RUST_TARGET}/release/libwallet_engine.so
+}
+
+do_check() {
+	cargo test --release --offline --locked --target ${RUST_TARGET} --lib
+}
+
+do_install() {
+	vinstall target/${RUST_TARGET}/release/libwallet_engine.so 755 usr/lib \
+		libwallet_engine.so.${version}
+	ln -sf libwallet_engine.so.${version} ${DESTDIR}/usr/lib/libwallet_engine.so
+	# Telegram's CMake builds the generated C++ bindings itself and expects
+	# wallet_engine.cpp beside wallet_engine.hpp in the include directory.
+	vmkdir usr/include/wallet_engine
+	vcopy "bindings/*" usr/include/wallet_engine
+	vlicense LICENSE-MIT
+	vlicense LICENSE-APACHE
+}
+
+libwallet_engine-devel_package() {
+	# Generated UniFFI bindings must match the runtime exactly.
+	depends="${sourcepkg}-${version}_${revision}"
+	short_desc+=" - development files"
+	pkg_install() {
+		vmove usr/include
+		vmove usr/lib/libwallet_engine.so
+	}
+}
