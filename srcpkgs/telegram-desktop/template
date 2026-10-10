@@ -1,7 +1,7 @@
 # Template file for 'telegram-desktop'
 pkgname=telegram-desktop
-version=7.0.4
-revision=3
+version=7.3.0
+revision=1
 build_style=cmake
 build_helper="qemu gir"
 configure_args="-DTDESKTOP_API_ID=209235
@@ -21,7 +21,7 @@ makedepends="alsa-lib-devel boost-devel-minimal libboost_regex
  qt6-base-private-devel kf6-kcoreaddons-devel ada-devel
  xcb-util-keysyms-devel hunspell-devel protobuf-devel
  glibmm2.68-devel tg_owt rnnoise-devel jemalloc-devel qt6-declarative-devel
- libdispatch-devel"
+ libdispatch-devel libtlottie-devel libwallet_engine-devel"
 depends="qt6-imageformats ttf-opensans"
 short_desc="Telegram Desktop messaging app"
 maintainer="John <me@johnnynator.dev>"
@@ -29,7 +29,7 @@ license="GPL-3.0-or-later, OpenSSL"
 homepage="https://desktop.telegram.org/"
 changelog="https://github.com/telegramdesktop/tdesktop/blob/v${version}/changelog.txt"
 distfiles="https://github.com/telegramdesktop/tdesktop/releases/download/v${version}/tdesktop-${version}-full.tar.gz"
-checksum=9b805d85cc9d36b4a8e3cab78d8f4137fa82ec70d5c6dbfef4beb4f449e14eb9
+checksum=74b2cd8b26efa2cf5da53270f7aaf70e0774bab0e65d6da3c2b4f47eddb9f517
 
 case $XBPS_TARGET_MACHINE in
 	armv6*) configure_args+=" -DDESKTOP_APP_DISABLE_SCUDO=true";; # Requires armv6k+ due to yield
