@@ -1,0 +1,44 @@
+# Template file for 'libtlottie'
+pkgname=libtlottie
+version=1.0.6
+revision=1
+build_style=cargo
+short_desc="Rust library for rendering Lottie animations"
+maintainer="Orphaned <orphan@voidlinux.org>"
+license="MIT"
+homepage="https://github.com/dkaraush/tlottie"
+distfiles="https://github.com/dkaraush/tlottie/archive/refs/tags/v${version}.tar.gz"
+checksum=a85dd1a8f62ca85248af380d5eee6f32e84b29c45134615b23355207ccb90359
+
+# No upstream ABI guarantee: use the full version in the SONAME.
+do_configure() {
+	cargo fetch --locked
+}
+
+do_build() {
+	cargo rustc --release --offline --locked --target ${RUST_TARGET} \
+		--lib --features c-api --crate-type cdylib -- \
+		-C link-arg=-Wl,-soname,libtlottie.so.${version}
+}
+
+do_check() {
+	cargo test --release --offline --locked --target ${RUST_TARGET} \
+		--lib --features c-api
+}
+
+do_install() {
+	vinstall target/${RUST_TARGET}/release/libtlottie.so 755 usr/lib \
+		libtlottie.so.${version}
+	ln -sf libtlottie.so.${version} ${DESTDIR}/usr/lib/libtlottie.so
+	vinstall include/tlottie.h 644 usr/include/tlottie
+	vlicense LICENSE
+}
+
+libtlottie-devel_package() {
+	depends="${sourcepkg}>=${version}_${revision}"
+	short_desc+=" - development files"
+	pkg_install() {
+		vmove usr/include
+		vmove usr/lib/libtlottie.so
+	}
+}
