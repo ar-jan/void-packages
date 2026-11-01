@@ -1,7 +1,7 @@
 # Template file for 'esbuild'
 pkgname=esbuild
-version=0.28.0
-revision=2
+version=0.28.1
+revision=1
 build_style=go
 go_import_path=github.com/evanw/esbuild
 go_package="./cmd/esbuild"
@@ -13,7 +13,7 @@ license="MIT"
 homepage="https://esbuild.github.io/"
 changelog="https://github.com/evanw/esbuild/releases"
 distfiles="https://github.com/evanw/esbuild/archive/refs/tags/v${version}.tar.gz"
-checksum=7aae83b197db3fd695e6f378d30fd6cbddeb93e4b1057b2c41d36ecb1dfebbc2
+checksum=65c756fa87d43178ac4a5242454c2bd0fde325f8ecf77997f8fa4b88f94d5cd2
 
 if [ "$CROSS_BUILD" ]; then
 	hostmakedepends+=" esbuild"
