@@ -1,0 +1,12 @@
+Use archive inputs to track the pinned web-discovery sources, without a Git checkout.
+--- a/brave/components/brave_extension/BUILD.gn
++++ b/brave/components/brave_extension/BUILD.gn
+@@ -36,7 +36,7 @@
+     # TODO(petemill): Have WDP use webpack (or another way) to spit out
+     # a depfile which automatically lists all the input files used to generate
+     # the WDP build.
+-    "//brave/vendor/web-discovery-project/.git/HEAD",
++    "//brave/vendor/web-discovery-project/pnpm-lock.yaml",
+     "//brave/vendor/web-discovery-project/package.json",
+   ]
+ 

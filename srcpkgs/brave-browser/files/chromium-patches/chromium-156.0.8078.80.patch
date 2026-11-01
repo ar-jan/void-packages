@@ -1,0 +1,12 @@
+Source: https://chromium.googlesource.com/chromium/src/+/156.0.8078.79..156.0.8078.80/
+
+diff --git a/chrome/VERSION b/chrome/VERSION
+index da70505..31f37d17 100644
+--- a/chrome/VERSION
++++ b/chrome/VERSION
+@@ -1,4 +1,4 @@
+ MAJOR=156
+ MINOR=0
+ BUILD=8078
+-PATCH=79
++PATCH=80

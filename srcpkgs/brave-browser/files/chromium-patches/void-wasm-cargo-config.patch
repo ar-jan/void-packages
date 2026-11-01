@@ -1,0 +1,12 @@
+--- a/brave/components/common/rust_to_wasm.gni
++++ b/brave/components/common/rust_to_wasm.gni
+@@ -50,6 +50,9 @@
+     # - makes our approach less self-contained.
+     #
+     response_file_contents = [
++      # wasm-pack's cargo metadata does not forward the --config build flag.
++      # Load the same vendored-source config for every Cargo subprocess.
++      "CARGO_HOME=abs@{{source_dir}}/.cargo",
+       "CARGO=abs@" +
+           rebase_path("//third_party/rust-toolchain/bin/cargo", root_build_dir),
+       "RUSTC=abs@" +

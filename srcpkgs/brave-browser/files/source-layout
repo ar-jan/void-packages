@@ -1,0 +1,14 @@
+chromium-156.0.8078.79-linux.tar.xz src
+brave-core-@VERSION@.tar.gz src/brave
+crubit-a355b02da81bc9f350925c73ec0322ce4d5140f1.tar.gz src/third_party/rust-toolchain-intermediate/crubit
+brave-intl-bat-native-tweetnacl-8b424ccf29957fe01c88c36076fd32006a357887.tar.gz src/brave/vendor/bat-native-tweetnacl
+brave-gn-project-generators-b76e14b162aa0ce40f11920ec94bfc12da29e5d0.tar.gz src/brave/vendor/gn-project-generators
+brave-web-discovery-project-80791e59ab389f3a49c94748f799dc3b5d8adb6b.tar.gz src/brave/vendor/web-discovery-project
+brave-intl-bat-native-bip39wally-core-547a7810333d821e29b8f55126aba031aa0d5fcd.tar.gz src/brave/third_party/bip39wally-core-native
+chfast-ethash-e4a15c3d76dc09392c7efd3e30d84ee3b871e9ce.tar.gz src/brave/third_party/ethash/src
+bitcoin-bitcoin-8105bce5b384c72cf08b25b7c5343622754e7337.tar.gz src/brave/third_party/bitcoin-core/src
+P-H-C-phc-winner-argon2-62358ba2123abd17fccf2a108a301d4b52c01a7c.tar.gz src/brave/third_party/argon2/src
+EngFlow-reclient-configs-21c8fe69ff771956c179847b8c1d9fd216181967.tar.gz src/brave/third_party/reclient_configs/src
+brave-playlist-component-673d40f017a1559bb685a15cf608ad1d4a94f8fb.tar.gz src/brave/third_party/playlist_component/src
+brave-intl-futures-retry-2aaaafbc3d394661534d4dbd14159d164243c20e.tar.gz src/brave/third_party/rust/futures_retry/v0_5/crate
+brave-librustzcash-f01f50d64214278552edbe4a34b9049244ce03c1.tar.gz src/brave/components/brave_wallet/browser/zcash/rust/librustzcash/src

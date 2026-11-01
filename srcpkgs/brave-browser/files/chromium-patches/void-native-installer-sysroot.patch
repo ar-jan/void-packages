@@ -1,0 +1,43 @@
+--- a/chrome/installer/linux/BUILD.gn
++++ b/chrome/installer/linux/BUILD.gn
+@@ -34,6 +34,13 @@
+ }
+ 
+ assert(is_linux)
++
++# DEB/RPM targets are loaded even when only building the browser for XBPS.
++# With use_sysroot=false their unused dependency actions must still be valid.
++installer_sysroot = sysroot
++if (installer_sysroot == "") {
++  installer_sysroot = "/"
++}
+ 
+ if (current_cpu == "x86") {
+   deb_arch = "i386"
+@@ -145,7 +152,7 @@
+   outputs = [ "$root_out_dir/deb_{{source_name_part}}.deps" ]
+   args = [
+     "{{source}}",
+-    rebase_path(sysroot, root_build_dir),
++    rebase_path(installer_sysroot, root_build_dir),
+     target_cpu,
+     "deb_{{source_name_part}}.deps",
+   ]
+@@ -343,7 +350,7 @@
+     "-o",
+     rebase_path(root_out_dir, root_build_dir),
+     "-s",
+-    rebase_path(sysroot, root_build_dir),
++    rebase_path(installer_sysroot, root_build_dir),
+     "-t",
+     target_os,
+   ]
+@@ -598,7 +605,7 @@
+       "-o",
+       rebase_path(root_out_dir, root_build_dir),
+       "-s",
+-      rebase_path(sysroot, root_build_dir),
++      rebase_path(installer_sysroot, root_build_dir),
+       "-t",
+       target_os,
+       "--xz-nthreads",
