@@ -1,0 +1,81 @@
+# Template file for 'rust-std-wasm32-unknown-unknown'
+pkgname=rust-std-wasm32-unknown-unknown
+version=1.99.0
+revision=1
+archs="x86_64"
+hostmakedepends="cargo rust python3 pkg-config"
+depends="rust>=${version} rust<1.99.1"
+checkdepends="file lld23"
+short_desc="Rust standard library for the wasm32-unknown-unknown target"
+maintainer="Orphaned <orphan@voidlinux.org>"
+license="MIT OR Apache-2.0"
+homepage="https://www.rust-lang.org/"
+distfiles="https://static.rust-lang.org/dist/rustc-${version}-src.tar.gz"
+checksum=2035e4077b834a42ff8afd07f277ae3f06340098b86b1d2843aa234b4cfcae67
+conflicts="rust-wasm>=0"
+nocross=yes
+nostrip=yes
+lib32disabled=yes
+
+do_configure() {
+	# The installed compiler must match these standard library sources exactly.
+	# Stage zero with local-rebuild builds only the cross-target standard library.
+	if [ "$(rustc --version | cut -d' ' -f2)" != "$version" ]; then
+		msg_error "This standard library requires rustc ${version}\n"
+	fi
+	local host="$(rustc -vV | sed -n 's/^host: //p')"
+	cat >bootstrap.toml <<-EOF
+		change-id = 160100
+		[build]
+		build = "$host"
+		host = ["$host"]
+		target = ["wasm32-unknown-unknown"]
+		rustc = "/usr/bin/rustc"
+		cargo = "/usr/bin/cargo"
+		local-rebuild = true
+		vendor = true
+		locked-deps = true
+		submodules = false
+		optimized-compiler-builtins = false
+		[rust]
+		channel = "stable"
+		download-rustc = false
+		deny-warnings = false
+		[llvm]
+		download-ci-llvm = false
+		[dist]
+		compression-formats = ["xz"]
+		[target.wasm32-unknown-unknown]
+		profiler = false
+		sanitizers = false
+	EOF
+}
+
+do_build() {
+	export CARGO_NET_OFFLINE=true
+	export CARGO_HOME="$wrksrc/.cargo-home"
+	unset RUSTFLAGS CARGO_BUILD_TARGET
+	python3 x.py dist --stage 0 --target wasm32-unknown-unknown \
+		${makejobs} rust-std
+	local archive="rust-std-${version}-wasm32-unknown-unknown"
+	mkdir -p wasm-sysroot
+	vtar xf "build/dist/${archive}.tar.xz" -C wasm-sysroot --strip-components=2 \
+		"${archive}/rust-std-wasm32-unknown-unknown/lib"
+}
+
+do_check() {
+	# Compile and link a consumer against the newly built sysroot.
+	printf 'fn main() { println!("wasm std: {}", vec![1, 2, 3].len()); }\n' >smoke.rs
+	rustc --target wasm32-unknown-unknown \
+		--sysroot wasm-sysroot -C linker=wasm-ld \
+		smoke.rs -o smoke.wasm
+	file smoke.wasm | grep -q 'WebAssembly'
+}
+
+do_install() {
+	vmkdir usr/lib/rustlib
+	vcopy "wasm-sysroot/lib/rustlib/wasm32-unknown-unknown" \
+		usr/lib/rustlib
+	vlicense LICENSE-MIT
+	vlicense LICENSE-APACHE
+}
