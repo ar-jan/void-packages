@@ -1,0 +1,26 @@
+# Template file for 'podman-runit'
+pkgname=podman-runit
+version=0.1.0.20261123
+revision=1
+_commit=acae4980ca35cd4d5921a1a00e9f0929525fd569
+build_style=go
+go_import_path="podman-runit"
+go_package="./cmd/podman-healthcheckd ./cmd/podman-runit"
+depends="podman>=6.1.4<7.0 runit turnstile"
+short_desc="Rootless Podman health scheduling with runit user services"
+maintainer="Arjan Mossel <arjanmossel@gmail.com>"
+license="MIT"
+homepage="https://github.com/ar-jan/podman-runit"
+distfiles="https://github.com/ar-jan/podman-runit/archive/${_commit}.tar.gz"
+checksum=b1c5b3e6b007d56e364ede9832ffaa6e829a39c0f1f14b12410d743f4654b3f4
+conflicts="podman-runit-healthcheck>=0"
+
+post_install() {
+	vmkdir usr/share/podman-runit/services
+	vcopy services/* usr/share/podman-runit/services
+	vlicense LICENSE
+	vdoc README.md
+	vdoc docs/architecture.md
+	vdoc docs/configuration.md
+	vdoc docs/packaging.md
+}
